@@ -15,7 +15,8 @@ class ElasticExample
                 'title' => $title,
                 'content' => $content,
                 'category' => $category,
-                'date' => $date
+                'date' => $date,
+                'views' => 0
             ]
         ]);
         return $response->getBody()->getContents();
@@ -28,4 +29,20 @@ class ElasticExample
         ]);
         return $response->getBody()->getContents();
     }
+
+    public function createNewsIndex() {
+    $response = $this->client->put("news", [
+        'json' => [
+            'mappings' => [
+                'properties' => [
+                    'title' => ['type' => 'text'],
+                    'content' => ['type' => 'text'], 
+                    'category' => ['type' => 'keyword'],
+                    'date' => ['type' => 'date']
+                ]
+            ]
+        ]
+    ]);
+    return $response->getBody()->getContents();
+}
 }

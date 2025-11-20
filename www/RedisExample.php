@@ -1,22 +1,31 @@
 <?php
 class RedisExample
 {
-    private $client;
+    private $redis;
 
     public function __construct()
     {
-        $this->client = ClientFactory::make('http://localhost:7379/'); // redis-commander proxy
+        $this->redis = new Redis();
+        $this->redis->connect('redis', 6379, 2.5);
     }
 
     public function setValue($key, $value)
     {
-        $response = $this->client->get("SET/$key/$value");
-        return $response->getBody()->getContents();
+        return $this->redis->set($key, $value);
     }
 
     public function getValue($key)
     {
-        $response = $this->client->get("GET/$key");
-        return $response->getBody()->getContents();
+        return $this->redis->get($key);
+    }
+
+    public function setNewsCounter($newsId, $count)
+    {
+        return $this->redis->set("news:counter:$newsId", $count);
+    }
+
+    public function getNewsCounter($newsId)
+    {
+        return $this->redis->get("news:counter:$newsId");
     }
 }
